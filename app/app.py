@@ -179,6 +179,7 @@ def load_scaler_encoder():
         scaler = joblib.load(sp)
     if ep.exists():
         encoder = joblib.load(ep)
+    return scaler, encoder
 
 @st.cache_data
 def load_comparison():
