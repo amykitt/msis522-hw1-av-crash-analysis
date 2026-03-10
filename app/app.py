@@ -191,7 +191,7 @@ def load_comparison():
 # ── Feature engineering (must match notebook) ────────────────────────────────
 EXACT_FEATURES = ['STATE', 'PEDS', 'PERNOTMVIT', 'VE_TOTAL', 'VE_FORMS', 'PVH_INVL', 
 'PERSONS', 'PERMVIT', 'COUNTY', 'CITY', 'MONTH', 'DAY', 'DAY_WEEK', 'YEAR',
-'HOUR', 'MINUTE', 'TWAY_ID', 'TWAY_ID2', 'ROUTE', 'RUR_URB', 'FUNC_SYS', 
+'HOUR', 'MINUTE', 'ROUTE', 'RUR_URB', 'FUNC_SYS', 
 'RD_OWNER', 'NHS', 'SP_JUR', 'MILEPT', 'LATITUDE', 'LONGITUD', 'HARM_EV', 
 'MAN_COLL', 'RELJCT1', 'RELJCT2', 'TYP_INT', 'REL_ROAD', 'WRK_ZONE', 
 'LGT_COND', 'WEATHER', 'SCH_BUS', 'RAIL', 'NOT_HOUR', 'NOT_MIN', 
@@ -203,7 +203,8 @@ def prepare_features(df):
         if col not in df2.columns:
             df2[col] = 0
     df2 = df2[EXACT_FEATURES]
-    df2 = df2.fillna(df2.median())
+    df2 = df2.apply(pd.to_numeric, errors='coerce')
+    df2 = df2.fillna(0)
     return df2
 
 # ── Load everything ───────────────────────────────────────────────────────────
