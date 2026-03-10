@@ -189,35 +189,20 @@ def load_comparison():
     return None
 
 # ── Feature engineering (must match notebook) ────────────────────────────────
-FEATURE_COLS = [
-    'HOUR', 'DAY_WEEK', 'MONTH', 'STATE', 'ROUTE', 'SP_JUR',
-    'HARM_EV', 'MAN_COLL', 'RELJCT1', 'RELJCT2', 'TYP_INT',
-    'WRK_ZONE', 'REL_ROAD', 'LGT_COND', 'WEATHER', 'SCH_BUS',
-    'RAIL', 'NOT_HOUR', 'NOT_MIN', 'ARR_HOUR', 'ARR_MIN',
-    'HOSP_HR', 'HOSP_MN', 'CF1', 'CF2', 'CF3',
-    'FATALS', 'DRUNK_DR', 'PERSONS', 'PERMVIT', 'PERNOTMVIT',
-    'VE_TOTAL', 'VE_FORMS', 'PVH_INVL',
-    'PEDS', 'PEDCYC', 'NHS', 'RUR_URB', 'FUNC_SYS',
-    'RD_OWNER', 'TWAY_ID', 'TWAY_ID2', 'MILEPT', 'SP_JUR'
-]
+EXACT_FEATURES = ['STATE', 'PEDS', 'PERNOTMVIT', 'VE_TOTAL', 'VE_FORMS', 'PVH_INVL', 
+'PERSONS', 'PERMVIT', 'COUNTY', 'CITY', 'MONTH', 'DAY', 'DAY_WEEK', 'YEAR',
+'HOUR', 'MINUTE', 'TWAY_ID', 'TWAY_ID2', 'ROUTE', 'RUR_URB', 'FUNC_SYS', 
+'RD_OWNER', 'NHS', 'SP_JUR', 'MILEPT', 'LATITUDE', 'LONGITUD', 'HARM_EV', 
+'MAN_COLL', 'RELJCT1', 'RELJCT2', 'TYP_INT', 'REL_ROAD', 'WRK_ZONE', 
+'LGT_COND', 'WEATHER', 'SCH_BUS', 'RAIL', 'NOT_HOUR', 'NOT_MIN', 
+'ARR_HOUR', 'ARR_MIN', 'HOSP_HR', 'HOSP_MN']
 
 def prepare_features(df):
-    """Match the feature prep from the notebook."""
-    drop_cols = ['ST_CASE', 'COUNTY', 'CITY', 'LATITUDE', 'LONGITUD',
-                 'TWAY_ID', 'TWAY_ID2', 'MILEPT', 'YEAR']
-    existing_drop = [c for c in drop_cols if c in df.columns]
-    df2 = df.drop(columns=existing_drop, errors='ignore')
-
-    target_col = None
-    for c in ['CRASH_SEVERITY', 'FATALS']:
-        if c in df2.columns:
-            target_col = c
-            break
-
-    if target_col:
-        df2 = df2.drop(columns=[target_col], errors='ignore')
-
-    df2 = df2.select_dtypes(include=[np.number])
+    df2 = df.copy()
+    for col in EXACT_FEATURES:
+        if col not in df2.columns:
+            df2[col] = 0
+    df2 = df2[EXACT_FEATURES]
     df2 = df2.fillna(df2.median())
     return df2
 
