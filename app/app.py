@@ -7,6 +7,7 @@ import matplotlib
 matplotlib.use('Agg')
 import seaborn as sns
 import pickle
+import joblib
 import shap
 from pathlib import Path
 import warnings
@@ -166,9 +167,8 @@ def load_models():
     ]:
         p = MODELS / fname
         if p.exists():
-            with open(p, "rb") as f:
-                models[name] = pickle.load(f)
-    return models
+            models[name] = joblib.load(p)
+        return models
 
 @st.cache_resource
 def load_scaler_encoder():
@@ -176,10 +176,9 @@ def load_scaler_encoder():
     sp = MODELS / "scaler.pkl"
     ep = MODELS / "label_encoder.pkl"
     if sp.exists():
-        with open(sp, "rb") as f: scaler = pickle.load(f)
+        scaler = joblib.load(sp)
     if ep.exists():
-        with open(ep, "rb") as f: encoder = pickle.load(f)
-    return scaler, encoder
+        encoder = joblib.load(ep)
 
 @st.cache_data
 def load_comparison():
