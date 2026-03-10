@@ -191,11 +191,11 @@ def load_comparison():
 # ── Feature engineering (must match notebook) ────────────────────────────────
 EXACT_FEATURES = ['STATE', 'PEDS', 'PERNOTMVIT', 'VE_TOTAL', 'VE_FORMS', 'PVH_INVL', 
 'PERSONS', 'PERMVIT', 'COUNTY', 'CITY', 'MONTH', 'DAY', 'DAY_WEEK', 'YEAR',
-'HOUR', 'MINUTE', 'ROUTE', 'RUR_URB', 'FUNC_SYS', 
+'HOUR', 'MINUTE', 'TWAY_ID', 'TWAY_ID2', 'ROUTE', 'RUR_URB', 'FUNC_SYS', 
 'RD_OWNER', 'NHS', 'SP_JUR', 'MILEPT', 'LATITUDE', 'LONGITUD', 'HARM_EV', 
 'MAN_COLL', 'RELJCT1', 'RELJCT2', 'TYP_INT', 'REL_ROAD', 'WRK_ZONE', 
 'LGT_COND', 'WEATHER', 'SCH_BUS', 'RAIL', 'NOT_HOUR', 'NOT_MIN', 
-'ARR_HOUR', 'ARR_MIN', 'HOSP_HR', 'HOSP_MN', 'TWAY_ID', 'TWAY_ID2',]
+'ARR_HOUR', 'ARR_MIN', 'HOSP_HR', 'HOSP_MN']
 
 def prepare_features(df):
     df2 = df.copy()
@@ -657,7 +657,13 @@ with tab4:
                 feature_names = X_full.columns.tolist()
 
                 # Start with median values
-                input_dict = {col: X_full[col].median() for col in feature_names}
+                input_dict = {col: 0.0 for col in EXACT_FEATURES}
+                for col in EXACT_FEATURES:
+                    if col in df.columns and col not in ['TWAY_ID', 'TWAY_ID2']:
+                        try:
+                            input_dict[col] = float(df[col].median())
+                        except:
+                            input_dict[col] = 0.0
 
                 # Override with user inputs
                 overrides = {
